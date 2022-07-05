@@ -73,8 +73,8 @@
     <div v-show="resvisible" class="tip">
       检测结果如下
     </div>
-    <div v-show="resvisible" class="demo-image__lazy" style="overflow:auto; width: 100%;">
-      <el-image v-for="url in urls" :key="url" :src="url" lazy style="text-align: center; width: 230px; height: 230px;" />
+    <div v-show="resvisible" class="demo-image__lazy" style="width: 100%; text-align: center;">
+      <el-image v-for="url in urls" :key="url" :src="url" :preview-src-list="[url]" lazy style="text-align: center; width: 230px; height: 230px; margin: 10px;" />
     </div>
     <el-row v-show="resvisible" style="text-align: center; padding-top:10px;padding-bottom:30px;">
       <el-button type="primary" round @click="saveResult()">保存结果</el-button>
@@ -104,7 +104,7 @@ export default {
       filenames: [],
       checkAll: false,
       isIndeterminate: true,
-      checkboxGroup1: ['操场'],
+      checkboxGroup1: ['操场', '储油桶', '飞机', '立交桥'],
       labels: LabelOptions,
       color1: 'rgba(255, 69, 0, 1)',
       color2: 'rgba(30, 144, 255, 1)',
@@ -162,6 +162,7 @@ export default {
     doBatchObjectDetection() {
       var that = this
       that.loading = true
+      that.resvisible = false
       const formData = new FormData()
       if (that.fileList.length === 0) {
         this.$message({
