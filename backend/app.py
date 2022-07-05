@@ -138,6 +138,7 @@ def objectdetection():
     if request.method == 'POST':
         img = request.files['senseimage']
         CLASS = request.form.get('CLASS')
+        CLASS = CLASS.split(',')
         CONFIDENCE = float(request.form.get('CONFIDENCE'))
         color1 =  request.form.get('COLOR1')
         color2 =  request.form.get('COLOR2')
@@ -209,6 +210,7 @@ def batchobjectdedtection():
     if request.method == 'POST':
         file = request.files['zipfile']
         CLASS = request.form.get('CLASS')
+        CLASS = CLASS.split(',')
         CONFIDENCE = float(request.form.get('CONFIDENCE'))
         color1 =  request.form.get('COLOR1')
         color2 =  request.form.get('COLOR2')
@@ -283,6 +285,7 @@ def objectclassification():
     if request.method == 'POST':
         img = request.files['senseimage']
         CLASS = request.form.get('CLASS')
+        CLASS = CLASS.split(',')
         color1 =  request.form.get('COLOR1')
         color2 =  request.form.get('COLOR2')
         color3 =  request.form.get('COLOR3')
@@ -356,6 +359,7 @@ def batchdiwuclassification():
     if request.method == 'POST':
         file = request.files['zipfile']
         CLASS = request.form.get('CLASS')
+        CLASS = CLASS.split(',')
         color1 =  request.form.get('COLOR1')
         color2 =  request.form.get('COLOR2')
         color3 =  request.form.get('COLOR3')
@@ -426,8 +430,8 @@ def batchdiwuclassification():
             
             if(filename.endswith('jpg')):
                 filename = list(filename)
-                index = filename.index('.')
-                filename[index+1:] = 'png'
+                i = filename.index('.')
+                filename[i+1:] = 'png'
                 filename = ''.join(filename)
             
             savepath = os.path.join(out_dir, filename)
@@ -574,13 +578,13 @@ def batchobjectextraction():
         
         for index, (result, filename) in enumerate(zip(results, filelist)):
             pred_map =  result['score_map'][:,:,-1]
-            label_map = (label_map > CONFIDENCE).astype('uint8')
+            pred_map = (pred_map > CONFIDENCE).astype('uint8')
             pred_map = lut[pred_map]
             
             if(filename.endswith('png') is False):
                 filename = list(filename)
-                index = filename.index('.')
-                filename[index+1:] = 'png'
+                i = filename.index('.')
+                filename[i+1:] = 'png'
                 filename = ''.join(filename)
                 
             savepath = os.path.join(out_dir, filename)
