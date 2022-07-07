@@ -60,7 +60,7 @@
       <div slot="tip" class="el-upload__tip">请上传zip压缩文件夹，文件内容为目标提取样本</div>
     </el-upload>
     <el-row style="text-align: center; padding-top:10px;padding-bottom:30px;">
-      <el-button type="primary" round :loading="loading" @click="doBatchDiwuclassifacation()">批量目标提取</el-button>
+      <el-button type="primary" round :loading="loading" @click="doBatchDiwuclassifacation()">批量地物分类</el-button>
     </el-row>
     <div v-show="resvisible" class="tip">
       检测结果如下
