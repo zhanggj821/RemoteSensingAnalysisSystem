@@ -98,7 +98,7 @@ def draw_bbox_mask(image, results, selectlabel, threshold=0.5, color_map=None):
     areas = []
     for dt in results:
         cname, bbox, score = dt['category'], dt['bbox'], dt['score']
-        if score < threshold and cname not in labels:
+        if score < threshold or cname not in labels:
             continue
         keep_results.append(dt)
         areas.append(bbox[2] * bbox[3])
