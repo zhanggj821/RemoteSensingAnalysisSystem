@@ -3,7 +3,7 @@
 1. 遥感图像解析是一项CV基础任务，包括目标检测、语义分割，其输入是一副或一组遥感图像输出是对遥感图像解析的结果, 例如对其进行变化检测、目标检测、地物分类、道路提取等基础功能。我们的**遥感图像解析系统(RSAS)**是一项基于百度深度学习框架PaddlePaddle的封装产品PaddleRS训练模型，从而帮助用户更好地使用以上四个功能。
 2. 该项目技术栈：后端：PaddleRS + Flask; 前端：Vue2 + Element UI
 3. web端主要功能：用户可以根据具体需求上传遥感图像完成相应的解析，此过程中用户可以自定义模型参数以及分析结果呈现的样式。此外我们还提供批处理功能，用户只需将要检测的图片打包上传即可。
-4. 模型训练部分不再展开，具体参考...
+4. 模型训练部分不再展开，具体参考各个模型baseline：[变化检测](https://aistudio.baidu.com/aistudio/projectdetail/3684588?ticket=f89b1634de0e4e60a203d82e39558a9b&alertTip=&qq-pf-to=pcqq.group)、 [目标检测](https://aistudio.baidu.com/aistudio/projectdetail/3792609)、[道路提取](https://aistudio.baidu.com/aistudio/projectdetail/3792610)、[地物分类](https://aistudio.baidu.com/aistudio/projectdetail/3792606)。
 5. 前端脚手架Github地址：https://github.com/PanJiaChen/vue-admin-template
 
 ## 二. 项目环境配置
@@ -45,7 +45,7 @@ pip install Flask
 ```
 #### 1.1 后端代码结构
 
-这部分将展示PaddleRS的文件结构全貌。文件树如下：
+这部分将展示后端的文件结构全貌。文件树如下：
 
 ```
     
@@ -56,6 +56,10 @@ pip install Flask
 │     ├── test           # 相关测试代码
 │     ├── app.py         # 主程序文件
 ```
+
+模型链接: https://pan.baidu.com/s/1qPju7IhLS_ZYWsBP0ac9Fw?pwd=fb4h 提取码: fb4h 下载完成后放在infer_model文件夹下即可
+
+修改app.py中的sys.path.append路径，以及projectroot 改为自己的项目路径
 
 启动后端服务
 ```
@@ -83,6 +87,43 @@ cd fronted
 npm install
 ```
 #### 2.1 前端代码结构
+
+这部分将展示前端的文件结构全貌。文件树如下：
+
+```
+├── build                      # build config files
+├── mock                       # mock data
+├── plop-templates             # basic template
+├── public                     # pure static assets (directly copied)
+│   │── favicon.ico            # favicon
+│   └── index.html             # index.html template
+├── src                        # main source code
+│   ├── api                    # api service
+│   ├── assets                 # module assets like fonts,images (processed by webpack)
+│   ├── components             # global components
+│   ├── directive              # global directive
+│   ├── filters                # global filter
+│   ├── icons                  # svg icons
+│   ├── lang                   # i18n language
+│   ├── layout                 # global layout
+│   ├── router                 # router
+│   ├── store                  # store
+│   ├── styles                 # global css
+│   ├── utils                  # global utils
+│   ├── vendor                 # vendor
+│   ├── views                  # views (主要代码在这个文件夹下，每个文件夹表示一个组件(页面))
+│   ├── App.vue                # main app component
+│   ├── main.js                # app entry file
+│   └── permission.js          # permission authentication
+├── tests                      # tests
+├── .env.xxx                   # env variable configuration
+├── .eslintrc.js               # eslint config
+├── .babelrc                   # babel config
+├── .travis.yml                # automated CI configuration
+├── vue.config.js              # vue-cli config
+├── postcss.config.js          # postcss config
+└── package.json               # package.json
+```
 
 
 启动前端项目

@@ -1,9 +1,10 @@
+from ntpath import join
 import zipfile
 import datetime
 import base64
 import sys
 import re
-sys.path.append('/home/guangjun/PaddleRS')
+sys.path.append('/home/backend')    #改为自己的项目根目录
 import os
 import numpy as np
 import imageio
@@ -15,10 +16,11 @@ from flask_cors import CORS, cross_origin
 from flask import Flask, render_template, request, make_response
 import paddlers as pdrs
 from paddlers import transforms as T
-from flask_paddlers.myutils.crop import crop_img, recons_prob_map, quantize
-from flask_paddlers.myutils.visualize import visualize_detection
-from flask_paddlers.myutils.add_channel import add_alpha_channel
+from myutils.crop import crop_img, recons_prob_map, quantize
+from myutils.visualize import visualize_detection
+from myutils.add_channel import add_alpha_channel
 
+projectroot = '/home/backend'    # 改为自己的root
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
@@ -54,8 +56,8 @@ def changedectection():
         senseafter = cv2.imdecode(np.frombuffer(senseafter, np.uint8), cv2.IMREAD_COLOR)
         
         
-        
-        predictor = pdrs.deploy.Predictor('/home/guangjun/PaddleRS/flask_paddlers/infer_model/inference_changedetection', use_gpu=True)
+        modeldir = os.path.join(projectroot, 'infer_model/inference_changedetection')
+        predictor = pdrs.deploy.Predictor(modeldir, use_gpu=True)
         trans = T.Compose([
         T.Normalize() ])
         imgs = [sensebefor, senseafter]
@@ -77,7 +79,7 @@ def changedectection():
         
         out = lut[out]
         
-        root = '/home/guangjun/PaddleRS/flask_paddlers/storage/changedetection'
+        root = os.path.join(projectroot, "storage/changedetection")
         savepath  = os.path.join(root, 'change_rgba.png')
         cv2.imwrite(savepath,  out)
         
@@ -159,7 +161,8 @@ def objectdetection():
         img = cv2.imdecode(np.frombuffer(img, np.uint8), cv2.IMREAD_COLOR)
         print(type(img))
         
-        predictor = pdrs.deploy.Predictor('/home/guangjun/PaddleRS/flask_paddlers/infer_model/inference_detection_ppyolo/all', use_gpu=True)
+        modeldir = os.path.join(projectroot, 'infer_model/inference_detection_ppyolo')
+        predictor = pdrs.deploy.Predictor(modeldir, use_gpu=True)
         
         trans = T.Compose([
             # 使用双三次插值将输入影像缩放到固定大小
@@ -180,7 +183,7 @@ def objectdetection():
                         threshold=CONFIDENCE, save_dir=None
                     )
         
-        root = '/home/guangjun/PaddleRS/flask_paddlers/storage/objectdetection'
+        root = os.path.join(projectroot, 'storage/objectdetection')
         savepath = os.path.join(root, 'detection.jpg')
         cv2.imwrite(savepath, vis)
         
@@ -225,7 +228,8 @@ def batchobjectdedtection():
             return {'code': '200', 'msg': '文件后缀名出现错误'}
         startNow = datetime.datetime.now()
         zip_file = zipfile.ZipFile(file)
-        unzipdir = "/home/guangjun/PaddleRS/flask_paddlers/storage/unzipdir/objectdetection" # 解压后名称
+        unzipdir = os.path.join(projectroot, 'storage/unzipdir/objectdetection')
+        # unzipdir = "/home/guangjun/PaddleRS/flask_paddlers/storage/unzipdir/objectdetection" # 解压后名称
         for names in zip_file.namelist():  #解压 
             zip_file.extract(names, unzipdir) 
         zip_file.close()
@@ -241,8 +245,8 @@ def batchobjectdedtection():
             img = cv2.imread(path)
             imgs.append(img)
         
-            
-        predictor = pdrs.deploy.Predictor('/home/guangjun/PaddleRS/flask_paddlers/infer_model/inference_detection_ppyolo/all', use_gpu=True)
+        modeldir = os.path.join(projectroot, 'infer_model/inference_detection_ppyolo')    
+        predictor = pdrs.deploy.Predictor(modeldir, use_gpu=True)
         trans = T.Compose([
             # 使用双三次插值将输入影像缩放到固定大小
             T.Resize(
@@ -299,7 +303,8 @@ def objectclassification():
         
         img = cv2.imdecode(np.frombuffer(img, np.uint8), cv2.IMREAD_COLOR)
         
-        predictor = pdrs.deploy.Predictor('/home/guangjun/PaddleRS/flask_paddlers/infer_model/inference_classification', use_gpu=True)
+        modeldir = os.path.join(projectroot, 'infer_model/inference_classification')    
+        predictor = pdrs.deploy.Predictor(modeldir, use_gpu=True)
         trans = T.Compose([
             T.Resize(target_size=256),
             # 验证阶段与训练阶段的数据归一化方式必须相同
@@ -307,7 +312,8 @@ def objectclassification():
                 mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
         ])
         
-        root = '/home/guangjun/PaddleRS/flask_paddlers/storage/diwuclassification' 
+        root = os.path.join(projectroot, 'storage/diwuclassification')
+        # root = '/home/guangjun/PaddleRS/flask_paddlers/storage/diwuclassification' 
         
         def get_lut(SelectLabels):
             lut = np.zeros((5,4), dtype=np.uint8)
@@ -373,7 +379,8 @@ def batchdiwuclassification():
             return {'code': '200', 'msg': '文件后缀名出现错误'}
         startNow = datetime.datetime.now()
         zip_file = zipfile.ZipFile(file)
-        unzipdir = "/home/guangjun/PaddleRS/flask_paddlers/storage/unzipdir/diwuclassification" # 解压后名称
+        unzipdir = os.path.join(projectroot, 'storage/unzipdir/diwuclassification')
+        # unzipdir = "/home/guangjun/PaddleRS/flask_paddlers/storage/unzipdir/diwuclassification" # 解压后名称
         for names in zip_file.namelist():  #解压 
             zip_file.extract(names, unzipdir) 
         zip_file.close()
@@ -388,8 +395,8 @@ def batchdiwuclassification():
             print(path)
             img = cv2.imread(path)
             imgs.append(img)
-        
-        predictor = pdrs.deploy.Predictor('/home/guangjun/PaddleRS/flask_paddlers/infer_model/inference_classification', use_gpu=True)
+        modeldir = os.path.join(projectroot, 'infer_model/inference_classification')
+        predictor = pdrs.deploy.Predictor(modeldir, use_gpu=True)
         trans = T.Compose([
             T.Resize(target_size=256),
             # 验证阶段与训练阶段的数据归一化方式必须相同
@@ -473,8 +480,8 @@ def objectextraction():
         img = img.read()
         
         img = cv2.imdecode(np.frombuffer(img, np.uint8), cv2.IMREAD_COLOR)
-        
-        predictor = pdrs.deploy.Predictor('/home/guangjun/PaddleRS/flask_paddlers/infer_model/inference_extraction', use_gpu=True)
+        modeldir = os.path.join(projectroot, 'infer_model/inference_extraction')
+        predictor = pdrs.deploy.Predictor(modeldir, use_gpu=True)
         trans = T.Compose([
             T.Resize(target_size=1488),
             # 验证阶段与训练阶段的数据归一化方式必须相同
@@ -495,8 +502,8 @@ def objectextraction():
         lut = get_lut()
         
         out = lut[label_map]
-        
-        root = '/home/guangjun/PaddleRS/flask_paddlers/storage/objectextraction'
+        root = os.path.join(projectroot, 'storage/objectextraction')
+        # root = '/home/guangjun/PaddleRS/flask_paddlers/storage/objectextraction'
         savepath = os.path.join(root, 'extraction_rgba.png')
         cv2.imwrite(savepath, out)
         
@@ -533,7 +540,8 @@ def batchobjectextraction():
             return {'code': '200', 'msg': '文件后缀名出现错误'}
         startNow = datetime.datetime.now()
         zip_file = zipfile.ZipFile(file)
-        unzipdir = "/home/guangjun/PaddleRS/flask_paddlers/storage/unzipdir/objectextraction" # 解压后名称
+        unzipdir = os.path.join(projectroot, 'storage/unzipdir/objectextraction')
+        # unzipdir = "/home/guangjun/PaddleRS/flask_paddlers/storage/unzipdir/objectextraction" # 解压后名称
         for names in zip_file.namelist():  #解压 
             zip_file.extract(names, unzipdir) 
         zip_file.close()
@@ -556,8 +564,8 @@ def batchobjectextraction():
             print(path)
             img = cv2.imread(path)
             imgs.append(img)
-        
-        predictor = pdrs.deploy.Predictor('/home/guangjun/PaddleRS/flask_paddlers/infer_model/inference_extraction', use_gpu=True)
+        modeldir = os.path.join(projectroot, 'infer_model/inference_extraction')
+        predictor = pdrs.deploy.Predictor(modeldir, use_gpu=True)
         trans = T.Compose([
             T.Resize(target_size=1488),
             # 验证阶段与训练阶段的数据归一化方式必须相同

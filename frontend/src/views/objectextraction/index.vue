@@ -23,22 +23,23 @@
         点击上传道路提取的遥感图
       </div>
       <el-upload
-        class="avatar-uploader"
+        class="upload-demo"
         action="#"
         :headers="headers"
-        list-type="picture-card"
         accept=".jpg, .jpeg, .png, .tiff"
         :name="name"
         :limit="2"
         :file-list="fileList"
-        :show-file-list="false"
+        :show-file-list="true"
         :auto-upload="false"
         :on-change="change"
         :before-upload="handleBefore"
         style="text-align: center; padding-top:10px;padding-bottom:10px;height:auto;"
       >
-        <el-image v-if="dialogImageUrl1" :src="dialogImageUrl1" class="avatar" />
-        <i v-else class="el-icon-upload" />
+        <el-button size="small" type="primary">点击上传</el-button>
+        <div slot="tip" class="el-upload__tip">上传要提取的jpg/png/tiff文件，</div>
+        <!-- <el-image v-if="dialogImageUrl1" :src="dialogImageUrl1" class="avatar" />
+        <i v-else class="el-icon-upload" /> -->
       </el-upload>
     </el-row>
     <el-row style="text-align: center; padding-top:10px;padding-bottom:30px;">
