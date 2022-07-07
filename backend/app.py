@@ -80,6 +80,7 @@ def changedectection():
         out = lut[out]
         
         root = os.path.join(projectroot, "storage/changedetection")
+        os.makedirs(root, exist_ok=True)
         savepath  = os.path.join(root, 'change_rgba.png')
         cv2.imwrite(savepath,  out)
         
@@ -184,6 +185,7 @@ def objectdetection():
                     )
         
         root = os.path.join(projectroot, 'storage/objectdetection')
+        os.makedirs(root, exist_ok=True)
         savepath = os.path.join(root, 'detection.jpg')
         cv2.imwrite(savepath, vis)
         
@@ -313,6 +315,7 @@ def objectclassification():
         ])
         
         root = os.path.join(projectroot, 'storage/diwuclassification')
+        os.makedirs(root, exist_ok=True)
         # root = '/home/guangjun/PaddleRS/flask_paddlers/storage/diwuclassification' 
         
         def get_lut(SelectLabels):
@@ -503,6 +506,7 @@ def objectextraction():
         
         out = lut[label_map]
         root = os.path.join(projectroot, 'storage/objectextraction')
+        os.makedirs(root, exist_ok=True)
         # root = '/home/guangjun/PaddleRS/flask_paddlers/storage/objectextraction'
         savepath = os.path.join(root, 'extraction_rgba.png')
         cv2.imwrite(savepath, out)
